@@ -1,0 +1,36 @@
+.quizContainer {
+  max-width: 800px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #0A0A0A;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  /* --- Propiedades añadidas para centrar el contenido interno --- */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Alinea los hijos horizontalmente al centro */
+  gap: 1.5rem; /* Añade 2rem de espacio entre todos los elementos hijos */
+  text-align: center; /* Centra el texto de los elementos de bloque */
+}
+
+.quizContent {
+  display: flex; /* Habilita Flexbox */
+  flex-direction: column; /* Organiza los elementos en una columna */
+  gap: 2rem; /* Añade 2rem de espacio entre la pregunta y las opciones */
+  width: 100%; /* Ocupa todo el ancho del contenedor padre */
+}
+
+.optionsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  /* Elimina el margin-top si lo tenías, el gap lo reemplazará */
+}
+
+@media (max-width: 768px) {
+  .optionsGrid {
+    grid-template-columns: 1fr;
+  }
+}

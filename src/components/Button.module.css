@@ -1,0 +1,18 @@
+.button {
+  display: inline-block;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background-color: #6862d8;
+  color: #333;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  background-color: #716cd1;
+}
