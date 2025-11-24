@@ -1,22 +1,21 @@
+// src/app/page.jsx (server component)
 import Header from '../components/Header';
 import Question from '../components/Question';
-import Option from '../components/Option';
-import Button from '../components/Button';
 import styles from './page.module.css';
+import prisma from '@/lib/prisma';
 
-export default function HomePage() {
+export default async function HomePage() {
+  const quiz = await prisma.quiz.findFirst({
+    include: { questions: { include: { options: true } } },
+  });
+
+  const question = quiz?.questions?.[0] ?? null;
+
   return (
     <main className={styles.quizContainer}>
       <Header />
       <div className={styles.quizContent}>
-        <Question />
-        <div className={styles.optionsGrid}>
-          <Option text="1989" />
-          <Option text="1991" />
-          <Option text="1993" />
-          <Option text="1987" />
-        </div>
-        <Button text="Siguiente Pregunta" /> 
+        {question ? <Question question={question} /> : <p>No hay preguntas todavía</p>}
       </div>
     </main>
   );

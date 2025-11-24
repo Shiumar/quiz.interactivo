@@ -6,6 +6,7 @@
   background-color: #0A0A0A;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  color: #333;
 
   /* --- Propiedades añadidas para centrar el contenido interno --- */
   display: flex;
@@ -20,6 +21,7 @@
   flex-direction: column; /* Organiza los elementos en una columna */
   gap: 2rem; /* Añade 2rem de espacio entre la pregunta y las opciones */
   width: 100%; /* Ocupa todo el ancho del contenedor padre */
+  color: #1a1a1a;
 }
 
 .optionsGrid {
