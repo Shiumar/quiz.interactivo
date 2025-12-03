@@ -1,0 +1,20 @@
+.optionButton {
+  display: block;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.05rem;
+  text-align: left;
+  background-color: rgba(107,70,193,0.12);
+  border: 2px solid rgba(107,70,193,0.18);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+  color: var(--ui-foreground);
+  font-weight: 500;
+}
+
+.optionButton:hover {
+  background-color: rgba(107,70,193,0.18);
+  border-color: rgba(107,70,193,0.26);
+  transform: translateY(-2px);
+}

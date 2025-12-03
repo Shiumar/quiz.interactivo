@@ -1,0 +1,77 @@
+{
+  "quiz": { "name": "Test", "internalId": 2 },
+  "questions": [
+    {
+      "text": "¿Cuál es la capital de Francia?",
+      "options": [
+        { "text": "Berlín", "isCorrect": false },
+        { "text": "Madrid", "isCorrect": false },
+        { "text": "Lyon", "isCorrect": false },
+        { "text": "París", "isCorrect": true }
+      ]
+    },
+    {
+      "text": "¿Cuánto es 2 + 2?",
+      "options": [
+        { "text": "1", "isCorrect": false },
+        { "text": "2", "isCorrect": false },
+        { "text": "4", "isCorrect": true },
+        { "text": "22", "isCorrect": false }
+      ]
+    },
+    {
+      "text": "¿Cuál planeta es conocido como el planeta rojo?",
+      "options": [
+        { "text": "Venus", "isCorrect": false },
+        { "text": "Marte", "isCorrect": true },
+        { "text": "Mercurio", "isCorrect": false },
+        { "text": "Júpiter", "isCorrect": false }
+      ]
+    },
+    {
+      "text": "¿En qué año se firmó la Declaración de Independencia de los EE.UU.?",
+      "options": [
+        { "text": "1775", "isCorrect": false },
+        { "text": "1776", "isCorrect": true },
+        { "text": "1783", "isCorrect": false },
+        { "text": "1800", "isCorrect": false }
+      ]
+    },
+    {
+      "text": "¿Cuál es el elemento químico más abundante en el universo?",
+      "options": [
+        { "text": "Oxígeno", "isCorrect": false },
+        { "text": "Carbono", "isCorrect": false },
+        { "text": "Hidrógeno", "isCorrect": true },
+        { "text": "Helio", "isCorrect": false }
+      ]
+    },
+    {
+      "text": "¿Cuántos continentes hay en la Tierra?",
+      "options": [
+        { "text": "5", "isCorrect": false },
+        { "text": "6", "isCorrect": false },
+        { "text": "7", "isCorrect": true },
+        { "text": "8", "isCorrect": false }
+      ]
+    },
+    {
+      "text": "¿Quién pintó la Mona Lisa?",
+      "options": [
+        { "text": "Michelangelo", "isCorrect": false },
+        { "text": "Leonardo da Vinci", "isCorrect": true },
+        { "text": "Rafael", "isCorrect": false },
+        { "text": "Caravaggio", "isCorrect": false }
+      ]
+    },
+    {
+      "text": "¿Cuál es la capital de Japón?",
+      "options": [
+        { "text": "Osaka", "isCorrect": false },
+        { "text": "Kioto", "isCorrect": false },
+        { "text": "Tokio", "isCorrect": true },
+        { "text": "Hiroshima", "isCorrect": false }
+      ]
+    }
+  ]
+}

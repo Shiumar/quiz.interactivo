@@ -1,0 +1,39 @@
+# Dependencias (Se instalan dentro del contenedor)
+node_modules
+npm-debug.log
+pnpm-debug.log
+yarn-error.log
+
+# Build artifacts locales (No los queremos en Docker)
+.next
+dist
+build
+coverage
+
+# Control de versiones y configuración de IDE
+.git
+.gitignore
+.vscode
+.idea
+
+# Archivos de entorno locales (Docker usa las variables inyectadas)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Archivos Docker (No necesitamos copiarlos dentro de sí mismos)
+Dockerfile
+Dockerfile.ci
+docker-compose.yml
+docker-compose.*.yml
+docker-helper.ps1
+docker-helper.sh
+
+# Archivos de sistema y basura
+.DS_Store
+Thumbs.db
+
+# Documentación y otros
+README.md
