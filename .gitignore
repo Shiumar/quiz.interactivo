@@ -32,8 +32,9 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 # Ignore real env files but allow `.env.example` to be committed
+# .env Permitido porque es un archivo de entorno de desarollo esencial para la aplicación y no contiene información sensible
 
-.env.local
+!.env
 .env.test
 !.env.example
 

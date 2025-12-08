@@ -28,6 +28,8 @@ services:
     container_name: db
     env_file:
       - .env
+    ports:
+      - "5432:5432"
     networks:
       - app-network
     volumes:
@@ -54,8 +56,6 @@ services:
       - db
     volumes:
       - ./servers.json:/pgadmin4/servers.json
-      - ./pgpass:/tmp/pgpassfile
-    entrypoint: /bin/sh -c "chmod 600 /tmp/pgpassfile && /entrypoint.sh"
     restart: unless-stopped
 
 volumes:

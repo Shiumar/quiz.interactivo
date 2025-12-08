@@ -1,31 +1,106 @@
-# Quiz Interactivo (Dockerized)
+# Quiz Interactivo (Full Stack Dockerized)
 
-Aplicación Next.js full-stack para realizar quizzes interactivos, gestionada con Prisma ORM y PostgreSQL. Todo el entorno está dockerizado para un despliegue "Plug & Play".
+Una aplicación web completa para realizar quizzes interactivos, con panel de administración, temas visuales (Claro/Oscuro/Cálido) y gestión de base de datos. Todo empaquetado en Docker para un despliegue inmediato tipo "Plug & Play".
 
-## Características
+## 🚀 Características Principales
 
-- **Frontend:** Next.js 15 (App Router) + Tailwind CSS.
-- **Backend:** Next.js API Routes.
-- **Base de Datos:** PostgreSQL 15.
-- **ORM:** Prisma 7 (Early Access) con arquitectura de cliente separado.
-- **Admin:** Incluye pgAdmin 4 pre-configurado.
-- **Docker:** Entorno completo con configuración automática.
+* **Frontend:** Next.js 16 (App Router) + Tailwind CSS.
+* **Backend:** API Routes integradas para lógica de juego y administración.
+* **Base de Datos:** PostgreSQL 15.
+* **ORM:** Prisma 7 (Early Access) con cliente optimizado para Docker y Linux Alpine.
+* **Temas:** Sistema de diseño con variables CSS (Modo Normal, Cálido, Oscuro).
+* **Admin:** Panel completo para crear, importar y gestionar contenido.
+* **Automatización:** Entorno "Self-Healing" que se autoconfigura al iniciar.
 
-## Requisitos Previos
+## 🛠️ Requisitos
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado y corriendo.
-- No necesitas tener Node.js ni PostgreSQL instalados en tu máquina local.
+* **Docker Desktop** (instalado y corriendo).
+* *No es necesario tener Node.js, PostgreSQL ni pnpm instalados en tu máquina local.*
 
-## Instalación y Uso (¡Muy Fácil!)
+---
 
-Este proyecto incluye scripts de ayuda (`docker-helper`) que manejan todo el ciclo de vida.
+## ⚡ Cómo Iniciar la Aplicación
 
-### 1. Clonar y Preparar
-Descarga el repositorio y entra en la carpeta.
+El proyecto incluye scripts de ayuda que manejan todo el ciclo de vida de los contenedores. Elige la opción según tu sistema operativo.
 
-### 2. Iniciar el Entorno
-Ejecuta el script de ayuda según tu sistema operativo:
+### Opción A: Usando el Script de Ayuda (Recomendado)
 
 **En Windows (PowerShell):**
-```powershell
 .\docker-helper.ps1 up
+
+**En Linux / Mac (Bash):**
+*(Asegúrate de dar permisos de ejecución primero)*
+chmod +x docker-helper.sh
+./docker-helper.sh up
+
+### Opción B: Usando Docker Compose Manualmente
+Si prefieres usar los comandos nativos de Docker o no puedes ejecutar los scripts, usa este comando (asegurando usar el archivo de entorno correcto):
+
+docker-compose --env-file .env.docker up -d --build
+
+---
+
+## 🧠 Arquitectura y Funcionamiento Interno
+
+Este proyecto utiliza una arquitectura **"Self-Healing"** (Auto-reparable) diseñada para evitar errores de configuración manual.
+
+### Ciclo de Vida al Iniciar (`entrypoint.sh`)
+Gracias al script `entrypoint.sh` configurado en el Dockerfile, cada vez que el contenedor inicia, realiza estos pasos automáticamente:
+
+1.  **Generación de Cliente:** Ejecuta `prisma generate` para compilar los binarios del cliente compatibles con Linux Alpine.
+2.  **Sincronización de BD (`db push`):** Compara tu archivo `schema.prisma` con la base de datos real. Si las tablas no existen o cambiaron, las crea/actualiza al instante.
+3.  **Semilla Inteligente (`db seed`):** Ejecuta `prisma/seed.ts`, que realiza dos tareas críticas:
+    * Crea el Quiz por defecto ("Millonario") si no existe.
+    * **Escanea la carpeta `/public`**: Si encuentra archivos `.json` nuevos, los importa automáticamente a la base de datos como nuevos Quizzes.
+
+### Configuración de Entorno
+El archivo `.env.docker` contiene credenciales pre-configuradas para que los contenedores (`app`, `db`, `pgadmin`) se comuniquen entre sí usando la red interna de Docker (`host: db`).
+
+---
+
+## 🛡️ Panel de Administración
+
+El sistema cuenta con dos áreas separadas para mantener el orden y la seguridad de los datos:
+
+### 1. Panel de Creación (`/admin`)
+Ubicado en `http://localhost:3000/admin`. Aquí puedes:
+* **Crear Nuevo Quiz:** Define el título de un nuevo cuestionario desde cero.
+* **Agregar Preguntas:** Añade preguntas una por una a cualquier quiz existente.
+* **Importar JSON:** Subir archivos `.json` masivos para crear quizzes completos en segundos.
+
+### 2. Panel de Gestión (`/admin/manage`)
+Ubicado en `http://localhost:3000/admin/manage`. Aquí puedes:
+* **Edición:** Modificar el texto de las preguntas o corregir las opciones de respuesta.
+* **Reordenamiento:** Si borras preguntas y quedan huecos en los IDs (ej: 1, 3, 5), puedes usar la herramienta **"Recompactar IDs"** para dejarlos secuenciales (1, 2, 3...).
+* **Eliminación:** Borrar preguntas obsoletas (el sistema maneja el borrado en cascada de sus opciones automáticamente).
+
+---
+
+## 🌐 Accesos Directos
+
+Una vez desplegado (espera a ver el mensaje de éxito en la consola), utiliza estas URLs:
+
+| Servicio | Ruta | Descripción |
+| :--- | :--- | :--- |
+| **Quiz App (Juego)** | http://localhost:3000 | Página principal para jugar. |
+| **Crear Contenido** | http://localhost:3000/admin | Crear quizzes e importar archivos. |
+| **Gestionar Contenido** | http://localhost:3000/admin/manage | Editar, borrar y reordenar preguntas. |
+| **Ranking** | http://localhost:3000/leaderboard | Tabla de posiciones global. |
+| **pgAdmin 4** | http://localhost:8080 | **User:** `admin@admin.com` <br> **Pass:** `root` |
+
+> **Nota para pgAdmin:** Para conectar al servidor desde la interfaz web, usa el host `db` (nombre del contenedor) en lugar de `localhost`.
+
+---
+
+## 🧹 Limpieza Total
+
+Si deseas borrar la base de datos y empezar de cero (útil si quieres reiniciar los IDs o borrar datos de prueba):
+
+**Con Script (Windows):**
+.\docker-helper.ps1 reset
+
+**Con Script (Linux/Mac):**
+./docker-helper.sh reset
+
+**Manualmente:**
+docker-compose --env-file .env.docker down -v

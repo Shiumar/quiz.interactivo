@@ -1,39 +1,50 @@
 import prisma from '@/lib/prisma';
-import crypto from 'crypto';
+import { NextResponse } from 'next/server';
 
 export async function POST(req, { params }) {
-  const { id } = await params;
+  const { id } = await params; // UUID de la pregunta
   try {
     const body = await req.json();
     const { newInternalId, confirm } = body;
-    if (!newInternalId) return new Response(JSON.stringify({ error: 'newInternalId requerido' }), { status: 400 });
-    if (!confirm) return new Response(JSON.stringify({ error: 'Se requiere confirmación explícita para reassign' }), { status: 400 });
 
-    // ensure newInternalId not in use
-    const exists = await prisma.question.findFirst({ where: { internalId: newInternalId } });
-    if (exists) return new Response(JSON.stringify({ error: 'El internalId destino ya existe' }), { status: 400 });
+    // 1. Validaciones
+    if (!newInternalId) {
+      return NextResponse.json({ error: 'newInternalId requerido' }, { status: 400 });
+    }
+    if (!confirm) {
+      return NextResponse.json({ error: 'Se requiere confirmación explícita' }, { status: 400 });
+    }
 
-    // fetch current question
-    const q = await prisma.question.findUnique({ where: { id }, include: { options: true } });
-    if (!q) return new Response(JSON.stringify({ error: 'Question no encontrada' }), { status: 404 });
-
-    // perform transactional copy-move: create new question with new internalId, move options, delete old
-    const tempUuid = crypto.randomUUID();
-    let updated;
-    await prisma.$transaction(async (tx) => {
-      // create new question with new internalId and temp uuid
-      await tx.question.create({ data: { internalId: newInternalId, id: tempUuid, text: q.text, quizInternalId: q.quizInternalId } });
-      // move options to new internalId
-      await tx.option.updateMany({ where: { questionInternalId: q.internalId }, data: { questionInternalId: newInternalId } });
-      // delete old question
-      await tx.question.delete({ where: { id } });
-      // set new question's id to old id (after old deleted) to preserve public uuid
-      updated = await tx.question.update({ where: { internalId: newInternalId }, data: { id: q.id }, include: { options: true } });
+    // 2. Verificar que el destino esté libre
+    // Buscamos por la Clave Primaria (internalId) en el scope global o del quiz? 
+    // Nota: Según tu schema, internalId es único globalmente (autoincrement).
+    const exists = await prisma.question.findUnique({
+      where: { internalId: Number(newInternalId) }
     });
 
-    return new Response(JSON.stringify({ ok: true, message: 'internalId de pregunta reasignado', updated }), { status: 200 });
+    if (exists) {
+      return NextResponse.json({ error: `El ID ${newInternalId} ya está en uso.` }, { status: 400 });
+    }
+
+    // 3. Actualización Directa
+    // Actualizamos el internalId. Al no tocar el campo 'id' (UUID),
+    // la relación con PlayerResponse se mantiene intacta.
+    // Las opciones vinculadas (Option) deberían actualizarse automáticamente si la DB tiene ON UPDATE CASCADE,
+    // de lo contrario, Prisma se encarga de la consistencia.
+    const updated = await prisma.question.update({
+      where: { id: id },
+      data: { internalId: Number(newInternalId) },
+      include: { options: true }
+    });
+
+    return NextResponse.json({ 
+      ok: true, 
+      message: 'ID reasignado correctamente', 
+      updated 
+    });
+
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+    console.error('Error reasignando pregunta:', err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
-

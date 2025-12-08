@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback } from 'react';
 
 const ToastContext = createContext(null);
 
@@ -23,12 +23,34 @@ export function ToastProvider({ children }) {
   return (
     <ToastContext.Provider value={{ push, remove }}>
       {children}
-      <div style={{ position: 'fixed', right: 16, top: 16, zIndex: 9999, display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {toasts.map((t) => (
-          <div key={t.id} style={{ background: t.type === 'error' ? '#fee2e2' : t.type === 'success' ? '#d1fae5' : '#eef2ff', color: t.type === 'error' ? '#991b1b' : '#063f17', padding: '0.6rem 0.9rem', borderRadius: 8, boxShadow: '0 4px 14px rgba(2,6,23,0.08)' }}>
-            {t.msg}
-          </div>
-        ))}
+      {/* Contenedor de Toasts: Fixed y sin bloquear clics en el resto de la pantalla */}
+      <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-3 pointer-events-none max-w-sm w-full p-4">
+        {toasts.map((t) => {
+          const isError = t.type === 'error';
+          const isSuccess = t.type === 'success';
+          
+          // Clases base para la tarjeta del toast
+          let classes = "pointer-events-auto px-5 py-4 rounded-xl shadow-xl font-bold text-sm transition-all animate-in slide-in-from-right-12 fade-in duration-300 flex items-center gap-3 border";
+          
+          // Estilos dinámicos según el tipo
+          if (isError) {
+             classes += " bg-[var(--accent-error)] text-white border-transparent";
+          } else if (isSuccess) {
+             classes += " bg-[var(--accent-success)] text-white border-transparent";
+          } else {
+             // Default / Info: Usa los colores del tema actual (fondo tarjeta, texto principal)
+             classes += " bg-[var(--bg-card)] text-[var(--text-main)] border-[var(--border)]";
+          }
+
+          return (
+            <div key={t.id} className={classes} role="alert">
+              <span className="text-lg">
+                {isError ? '⚠️' : isSuccess ? '✅' : 'ℹ️'}
+              </span>
+              <span>{t.msg}</span>
+            </div>
+          );
+        })}
       </div>
     </ToastContext.Provider>
   );

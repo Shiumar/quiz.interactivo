@@ -1,0 +1,95 @@
+{
+  "quiz": { "name": "Cultura General", "internalId": 2 },
+  "questions": [
+    {
+      "text": "¿Cuál es el elemento químico más abundante en el universo?",
+      "options": [
+        { "text": "Oxígeno", "isCorrect": false },
+        { "text": "Carbono", "isCorrect": false },
+        { "text": "Hidrógeno", "isCorrect": true },
+        { "text": "Helio", "isCorrect": false }
+      ]
+    },
+    {
+      "text": "¿Cuántos continentes hay en la Tierra?",
+      "options": [
+        { "text": "5", "isCorrect": false },
+        { "text": "6", "isCorrect": false },
+        { "text": "7", "isCorrect": true },
+        { "text": "8", "isCorrect": false }
+      ]
+    },
+    {
+      "text": "¿Quién pintó la Mona Lisa?",
+      "options": [
+        { "text": "Michelangelo", "isCorrect": false },
+        { "text": "Leonardo da Vinci", "isCorrect": true },
+        { "text": "Rafael", "isCorrect": false },
+        { "text": "Caravaggio", "isCorrect": false }
+      ]
+    },
+    {
+      "text": "¿Cuál es la capital de Japón?",
+      "options": [
+        { "text": "Osaka", "isCorrect": false },
+        { "text": "Kioto", "isCorrect": false },
+        { "text": "Tokio", "isCorrect": true },
+        { "text": "Hiroshima", "isCorrect": false }
+      ]
+    },
+    {
+      "text": "¿Cuál es el órgano más grande del cuerpo humano?",
+      "options": [
+        { "text": "El Hígado", "isCorrect": false },
+        { "text": "El Cerebro", "isCorrect": false },
+        { "text": "La Piel", "isCorrect": true },
+        { "text": "Los Pulmones", "isCorrect": false }
+      ]
+    },
+    {
+      "text": "¿Cuál es el símbolo químico del Oro?",
+      "options": [
+        { "text": "Ag", "isCorrect": false },
+        { "text": "Or", "isCorrect": false },
+        { "text": "Au", "isCorrect": true },
+        { "text": "Fe", "isCorrect": false }
+      ]
+    },
+    {
+      "text": "¿Quién fue el primer ser humano en viajar al espacio exterior?",
+      "options": [
+        { "text": "Neil Armstrong", "isCorrect": false },
+        { "text": "Yuri Gagarin", "isCorrect": true },
+        { "text": "Buzz Aldrin", "isCorrect": false },
+        { "text": "Valentina Tereshkova", "isCorrect": false }
+      ]
+    },
+    {
+      "text": "¿Quién pintó 'La Noche Estrellada'?",
+      "options": [
+        { "text": "Pablo Picasso", "isCorrect": false },
+        { "text": "Claude Monet", "isCorrect": false },
+        { "text": "Vincent van Gogh", "isCorrect": true },
+        { "text": "Salvador Dalí", "isCorrect": false }
+      ]
+    },
+    {
+      "text": "¿Cuál es el país más grande del mundo por superficie?",
+      "options": [
+        { "text": "China", "isCorrect": false },
+        { "text": "Estados Unidos", "isCorrect": false },
+        { "text": "Rusia", "isCorrect": true },
+        { "text": "Canadá", "isCorrect": false }
+      ]
+    },
+    {
+      "text": "¿En qué año pisó el ser humano la Luna por primera vez?",
+      "options": [
+        { "text": "1959", "isCorrect": false },
+        { "text": "1969", "isCorrect": true },
+        { "text": "1975", "isCorrect": false },
+        { "text": "1980", "isCorrect": false }
+      ]
+    }
+  ]
+}

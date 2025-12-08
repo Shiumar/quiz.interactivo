@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback } from 'react';
 
 const ConfirmContext = createContext(null);
 
@@ -22,12 +22,25 @@ export function ConfirmProvider({ children }) {
     <ConfirmContext.Provider value={{ confirm }}>
       {children}
       {modal && (
-        <div style={{ position: 'fixed', left: 0, top: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.35)', zIndex: 10000 }}>
-          <div style={{ background: '#fff', padding: '1rem 1.25rem', borderRadius: 8, width: 420, maxWidth: '92%' }}>
-            <div style={{ marginBottom: '1rem', color: '#111' }}>{modal.message}</div>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-              <button onClick={() => handle(false)} style={{ padding: '0.5rem 0.75rem' }}>Cancelar</button>
-              <button onClick={() => handle(true)} style={{ padding: '0.5rem 0.75rem', background: '#2563eb', color: '#fff', border: 'none', borderRadius: 6 }}>Confirmar</button>
+        <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-[9999] backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-[var(--bg-card)] p-6 rounded-2xl shadow-2xl w-full max-w-md transform transition-all scale-100 border border-[var(--border)]">
+            <h3 className="text-lg font-bold text-[var(--text-main)] mb-4">Confirmación</h3>
+            <p className="mb-8 text-base text-[var(--text-muted)] font-medium leading-relaxed">
+              {modal.message}
+            </p>
+            <div className="flex justify-end gap-3">
+              <button 
+                onClick={() => handle(false)} 
+                className="px-5 py-2.5 rounded-xl font-bold text-[var(--text-muted)] hover:bg-[var(--secondary)] transition-colors text-sm"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={() => handle(true)} 
+                className="px-5 py-2.5 bg-[var(--primary)] text-white font-bold rounded-xl hover:bg-[var(--primary-hover)] shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all text-sm"
+              >
+                Confirmar
+              </button>
             </div>
           </div>
         </div>
