@@ -26,17 +26,23 @@ El proyecto incluye scripts de ayuda que manejan todo el ciclo de vida de los co
 ### Opción A: Usando el Script de Ayuda (Recomendado)
 
 **En Windows (PowerShell):**
+```powershell
 .\docker-helper.ps1 up
+```
 
 **En Linux / Mac (Bash):**
 *(Asegúrate de dar permisos de ejecución primero)*
+```bash
 chmod +x docker-helper.sh
 ./docker-helper.sh up
+```
 
 ### Opción B: Usando Docker Compose Manualmente
-Si prefieres usar los comandos nativos de Docker o no puedes ejecutar los scripts, usa este comando (asegurando usar el archivo de entorno correcto):
+Si prefieres usar los comandos nativos de Docker o no puedes ejecutar los scripts, simplemente ejecuta el siguiente comando en la raíz del proyecto:
 
-docker-compose --env-file .env.docker up -d --build
+```bash
+docker-compose up -d --build
+```
 
 ---
 
@@ -53,8 +59,8 @@ Gracias al script `entrypoint.sh` configurado en el Dockerfile, cada vez que el 
     * Crea el Quiz por defecto ("Millonario") si no existe.
     * **Escanea la carpeta `/public`**: Si encuentra archivos `.json` nuevos, los importa automáticamente a la base de datos como nuevos Quizzes.
 
-### Configuración de Entorno
-El archivo `.env.docker` contiene credenciales pre-configuradas para que los contenedores (`app`, `db`, `pgadmin`) se comuniquen entre sí usando la red interna de Docker (`host: db`).
+### Configuración de Entorno (.env)
+Se incluye un archivo `.env` pre-configurado explícitamente en el repositorio ("Plug & Play"). Esto permite que los contenedores se comuniquen entre sí (ej: `db:5432`) sin necesidad de que el usuario configure variables manualmente.
 
 ---
 
@@ -64,7 +70,7 @@ El sistema cuenta con dos áreas separadas para mantener el orden y la seguridad
 
 ### 1. Panel de Creación (`/admin`)
 Ubicado en `http://localhost:3000/admin`. Aquí puedes:
-* **Crear Nuevo Quiz:** Define el título de un nuevo cuestionario desde cero.
+* **Crear Nuevo Quiz:** Definir el título de un nuevo cuestionario desde cero.
 * **Agregar Preguntas:** Añade preguntas una por una a cualquier quiz existente.
 * **Importar JSON:** Subir archivos `.json` masivos para crear quizzes completos en segundos.
 
@@ -97,10 +103,16 @@ Una vez desplegado (espera a ver el mensaje de éxito en la consola), utiliza es
 Si deseas borrar la base de datos y empezar de cero (útil si quieres reiniciar los IDs o borrar datos de prueba):
 
 **Con Script (Windows):**
+```powershell
 .\docker-helper.ps1 reset
+```
 
 **Con Script (Linux/Mac):**
+```bash
 ./docker-helper.sh reset
+```
 
 **Manualmente:**
-docker-compose --env-file .env.docker down -v
+```bash
+docker-compose down -v
+```

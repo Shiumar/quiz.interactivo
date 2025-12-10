@@ -1,28 +1,30 @@
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '../src/generated/prisma/client';
+// CORRECCIÓN CRÍTICA: Importar desde el paquete estándar, no desde la ruta relativa antigua
+import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
 
-const prisma = new PrismaClient({ adapter: new PrismaPg(new Pool({ 
-  connectionString: process.env.DATABASE_URL 
-})) });
+const connectionString = process.env.DATABASE_URL!;
+
+const pool = new Pool({ connectionString });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
 
 // Helper para procesar un único objeto de Quiz
 async function processQuiz(quizData: any, defaultId?: number, defaultTitle?: string) {
   // 1. Determinar Metadatos
-  // Si el JSON tiene estructura { quiz: { internalId: 1, name: "..." }, questions: [...] }
+  // Si el JSON tiene estrucctura { quiz: { IinternalId: 1, name: '...' }, questions: [...] }
   const meta = quizData.quiz || {};
   const questions = Array.isArray(quizData) ? quizData : (quizData.questions || []);
   
-  const internalId = meta.internalId || defaultId; // Puede ser undefined si es dinámico
+  const internalId = meta.internalId || defaultId; 
   const title = meta.name || meta.title || defaultTitle || 'Quiz Importado';
 
   console.log(`Processing: "${title}" (ID: ${internalId || 'Auto'})...`);
 
   // 2. Buscar o Crear el Quiz (Evita duplicados de Quiz)
   let quiz;
-
   if (internalId) {
     // Si tenemos un ID fijo, usamos upsert para asegurarlo
     quiz = await prisma.quiz.upsert({
@@ -40,7 +42,6 @@ async function processQuiz(quizData: any, defaultId?: number, defaultTitle?: str
 
   // 3. Procesar Preguntas (Evita duplicados de Preguntas)
   let questionsAdded = 0;
-  
   for (const q of questions) {
     if (!q.text) continue;
 

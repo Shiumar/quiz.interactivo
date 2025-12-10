@@ -1,33 +1,34 @@
-# Etapa de Construcción (Builder)
-FROM node:24-alpine AS builder
+# Etapa 1: Constructor (Builder)
+FROM node:20-alpine AS builder
 WORKDIR /app
 
-# Aceptar argumento de construcción
+# Aceptar el argumento de construcción DATABASE_URL
 ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
 
 # Instalar pnpm
 RUN npm install -g pnpm
 
-# Copiar archivos de dependencias
+# Copiar archivos de definición de dependencias
 COPY package.json pnpm-lock.yaml ./
 
-# Instalar todas las dependencias
+# Instalar todas las dependencias (incluyendo devDependencies)
 RUN pnpm install --frozen-lockfile
 
-# Copiar el proyecto
+# Copiar el resto del código fuente
 COPY . .
 
-# --- GENERACIÓN PRISMA 7 ---
+# --- GENERACIÓN DE PRISMA 7 ---\r
+# Nota: Prisma ahora genera en node_modules/@prisma/client por defecto
+RUN echo "Build-time DATABASE_URL is: $DATABASE_URL"
 RUN pnpm exec prisma generate
 
-# Construir la aplicación (Usamos turbopack igual que en producción)
+# Construir la aplicación Next.js
 RUN pnpm exec next build --turbopack
 
-# Etapa de Ejecución (Runner)
-FROM node:24-alpine AS runner
+# Etapa 2: Producción
+FROM node:20-alpine
 WORKDIR /app
-ENV NODE_ENV=production
 
 # 1. INSTALACIÓN DE SISTEMA
 RUN npm install -g pnpm && \
@@ -37,32 +38,43 @@ RUN npm install -g pnpm && \
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
 
-# Instalar SOLO dependencias de producción
+# Copiar definiciones
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --prod
 
-# ARREGLO CRÍTICO: Instalar herramientas para el entrypoint
+# 3. INSTALACIÓN DE DEPENDENCIAS
+RUN pnpm install --frozen-lockfile --prod
+# FIX CRÍTICO 1: Instalar Prisma CLI
 RUN pnpm add prisma
+# FIX CRÍTICO 2: Instalar TSX para el seed
 RUN pnpm add tsx
 
-# 3. COPIAR ARCHIVOS CON PERMISOS
-# Copiamos los artefactos y configuración necesarios para que la app y el seed funcionen
+# 4. COPIAR ARCHIVOS CON PERMISOS CORRECTOS
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/src/generated ./src/generated
+
+# Nota: Ya no copiamos src/generated porque usamos el default
 COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/entrypoint.sh ./entrypoint.sh
 
-# Permisos de ejecución
-RUN chmod +x ./entrypoint.sh && \
-    sed -i 's/\r$//' ./entrypoint.sh || true
+# Asegurar permisos de ejecución del script
+RUN chmod +x /app/entrypoint.sh && \
+    sed -i 's/\r$//' /app/entrypoint.sh || true
 
+# -----------------------------------------------------------
+# FIX DE PERMISOS (NUEVO Y CRÍTICO)
+# Le damos propiedad de node_modules al usuario nextjs
+# para que 'prisma generate' pueda escribir ahí al iniciar.
+# -----------------------------------------------------------
+RUN chown -R nextjs:nodejs /app/node_modules
+
+# Expose port
 EXPOSE 3000
+ENV NODE_ENV=production
 ENV PORT=3000
 
-# 4. CAMBIO DE USUARIO FINAL
+# 5. CAMBIO DE USUARIO
 USER nextjs
 
-ENTRYPOINT ["dumb-init", "--", "sh", "./entrypoint.sh"]
+ENTRYPOINT ["dumb-init", "--", "sh", "/app/entrypoint.sh"]
 CMD ["pnpm", "start"]
